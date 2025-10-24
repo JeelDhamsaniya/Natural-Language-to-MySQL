@@ -26,8 +26,8 @@ export const databaseAPI = {
 export const queryAPI = {
   generateQuery: (naturalLanguage, previousQuery = null, feedback = null) =>
     api.post("/query/generate", { naturalLanguage, previousQuery, feedback }),
-  executeQuery: (sql, analystMode = false, confirmed = false) =>
-    api.post("/query/execute", { sql, analystMode, confirmed }),
+  executeQuery: (sql, analystMode = false, confirmationLevel = 0) =>
+    api.post("/query/execute", { sql, analystMode, confirmationLevel }),
   analyzeQuery: (sql) => api.post("/query/analyze", { sql }),
 };
 

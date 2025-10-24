@@ -54,26 +54,47 @@ export const validateAnalystMode = (req, res, next) => {
 };
 
 /**
- * Check if query needs confirmation
+ * Check if query needs confirmation (Two-step verification for dangerous queries)
  */
 export const checkDangerousQuery = (req, res, next) => {
-  const { sql, confirmed } = req.body;
+  const { sql, confirmationLevel = 0 } = req.body;
 
   const dangerous = isDangerousQuery(sql);
 
-  // If dangerous and not confirmed, send warning
-  if (dangerous && !confirmed) {
+  // If dangerous and no confirmation, send first warning
+  if (dangerous && confirmationLevel === 0) {
     return res.status(200).json({
       success: false,
       needsConfirmation: true,
       isDangerous: true,
+      confirmationLevel: 1,
       warning:
-        "⚠️ This query will modify or delete data permanently. Are you sure you want to proceed?",
+        "⚠️ WARNING: This query will modify or delete data permanently. Please review carefully before proceeding.",
       sql: sql,
     });
   }
 
-  // Mark as validated
+  // If dangerous and first confirmation only, require second confirmation
+  if (dangerous && confirmationLevel === 1) {
+    return res.status(200).json({
+      success: false,
+      needsConfirmation: true,
+      isDangerous: true,
+      confirmationLevel: 2,
+      warning:
+        "🚨 FINAL WARNING: This is a destructive operation that CANNOT be undone. Are you absolutely sure?",
+      sql: sql,
+    });
+  }
+
+  // If dangerous and second confirmation, allow execution
+  if (dangerous && confirmationLevel === 2) {
+    req.queryValidated = true;
+    req.isDangerous = dangerous;
+    return next();
+  }
+
+  // Not dangerous, proceed normally
   req.queryValidated = true;
   req.isDangerous = dangerous;
   next();

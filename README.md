@@ -23,9 +23,11 @@ A full-stack web application that combines MySQL database management with AI-pow
 
 ### Safety Features
 
-- ⚠️ Dangerous query detection (DELETE, DROP, TRUNCATE)
-- 🔒 Double confirmation for destructive operations
-- 🛡️ SQL injection prevention
+- ⚠️ **Two-Step Verification** - Dangerous operations require double confirmation with escalating warnings
+- 🟠 **Progressive Alerts** - Orange warning → Red critical warning before execution
+- ⚠️ Dangerous query detection (DELETE, DROP, TRUNCATE, ALTER)
+- 🔒 SQL injection prevention
+- 🛡️ Query validation middleware
 - 📊 Analyst Mode - restricts to SELECT queries only
 
 ### Analyst Mode
@@ -270,10 +272,15 @@ The AI will:
 ## 🔒 Security Features
 
 - **SQL Injection Prevention**: Only single statements allowed
+- **Two-Step Verification**: Dangerous operations (DELETE/DROP/TRUNCATE) require **double confirmation** with escalating warnings
+  - **Step 1**: Orange warning modal - Initial safety check
+  - **Step 2**: Red critical warning - Final confirmation before execution
 - **Query Validation**: Dangerous patterns detected automatically
-- **Double Confirmation**: DELETE/DROP operations require explicit confirmation
-- **Analyst Mode**: Read-only mode for safe exploration
+- **Analyst Mode**: Read-only mode for safe exploration (SELECT queries only)
 - **Error Handling**: Graceful error messages and logging
+- **Visual Warnings**: Color-coded alerts (orange → red) indicate danger level
+
+See [TWO_STEP_VERIFICATION.md](./TWO_STEP_VERIFICATION.md) for detailed information about the safety system.
 
 ## ⚙️ Configuration
 

@@ -21,6 +21,8 @@ const QueryPage = () => {
   const [explanation, setExplanation] = useState("");
   const [isDangerous, setIsDangerous] = useState(false);
   const [needsConfirmation, setNeedsConfirmation] = useState(false);
+  const [confirmationLevel, setConfirmationLevel] = useState(0);
+  const [warningMessage, setWarningMessage] = useState("");
 
   // Results
   const [results, setResults] = useState(null);
@@ -36,6 +38,7 @@ const QueryPage = () => {
 
     setLoading(true);
     setError("");
+    setConfirmationLevel(0); // Reset confirmation level
 
     try {
       const response = await queryAPI.generateQuery(
@@ -58,7 +61,7 @@ const QueryPage = () => {
     }
   };
 
-  const handleExecuteQuery = async (confirmed = false) => {
+  const handleExecuteQuery = async () => {
     setExecuting(true);
     setError("");
 
@@ -66,13 +69,16 @@ const QueryPage = () => {
       const response = await queryAPI.executeQuery(
         generatedSQL,
         analystMode,
-        confirmed
+        confirmationLevel
       );
 
-      // Check if needs confirmation
+      // Check if needs confirmation (first or second)
       if (response.data.needsConfirmation) {
+        const newLevel = response.data.confirmationLevel || 1;
         setIsDangerous(true);
         setNeedsConfirmation(true);
+        setConfirmationLevel(newLevel);
+        setWarningMessage(response.data.warning);
         setExecuting(false);
         return;
       }
@@ -81,6 +87,7 @@ const QueryPage = () => {
         setResults(response.data.data);
         setExecutionTime(response.data.executionTime);
         setNeedsConfirmation(false);
+        setConfirmationLevel(0); // Reset confirmation level
 
         // Add to history for query chaining
         setQueryHistory([
@@ -99,6 +106,7 @@ const QueryPage = () => {
     } catch (err) {
       setError(err.response?.data?.error || "Failed to execute query");
       setNeedsConfirmation(false);
+      setConfirmationLevel(0);
     } finally {
       setExecuting(false);
     }
@@ -106,6 +114,8 @@ const QueryPage = () => {
 
   const handleReject = () => {
     setNeedsConfirmation(false);
+    setConfirmationLevel(0); // Reset confirmation level
+    setIsDangerous(false);
     // Focus back on input for user to modify
   };
 
@@ -239,7 +249,9 @@ const QueryPage = () => {
         sql={generatedSQL}
         explanation={explanation}
         isDangerous={isDangerous}
-        onApprove={() => handleExecuteQuery(true)}
+        confirmationLevel={confirmationLevel}
+        warningMessage={warningMessage}
+        onApprove={handleExecuteQuery}
         onReject={handleReject}
         loading={executing}
       />

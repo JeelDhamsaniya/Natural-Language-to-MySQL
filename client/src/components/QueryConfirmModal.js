@@ -7,11 +7,44 @@ const QueryConfirmModal = ({
   sql,
   explanation,
   isDangerous,
+  confirmationLevel = 0,
+  warningMessage,
   onApprove,
   onReject,
   loading,
 }) => {
   if (!isOpen) return null;
+
+  // Determine modal styling based on confirmation level
+  const getModalStyle = () => {
+    if (!isDangerous) return "blue";
+    if (confirmationLevel === 1) return "orange";
+    if (confirmationLevel === 2) return "red";
+    return "blue";
+  };
+
+  const modalStyle = getModalStyle();
+
+  const colorClasses = {
+    blue: {
+      icon: "text-blue-600",
+      bg: "bg-blue-50 border-blue-200",
+      text: "text-blue-800",
+      button: "bg-blue-600 hover:bg-blue-700",
+    },
+    orange: {
+      icon: "text-orange-600",
+      bg: "bg-orange-50 border-orange-200",
+      text: "text-orange-800",
+      button: "bg-orange-600 hover:bg-orange-700",
+    },
+    red: {
+      icon: "text-red-600",
+      bg: "bg-red-50 border-red-200",
+      text: "text-red-800",
+      button: "bg-red-600 hover:bg-red-700",
+    },
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -20,9 +53,9 @@ const QueryConfirmModal = ({
           <div className="flex items-center gap-2">
             {isDangerous ? (
               <>
-                <FiAlertTriangle className="text-2xl text-red-600" />
+                <FiAlertTriangle className={`text-2xl ${colorClasses[modalStyle].icon}`} />
                 <h2 className="text-2xl font-bold text-gray-800">
-                  ⚠️ Confirm Dangerous Query
+                  {confirmationLevel === 2 ? "🚨 FINAL WARNING" : "⚠️ Confirm Dangerous Query"}
                 </h2>
               </>
             ) : (
@@ -44,11 +77,15 @@ const QueryConfirmModal = ({
 
         <div className="p-6">
           {isDangerous && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-800 font-medium">
-                ⚠️ This query will modify or delete data permanently. Are you
-                sure you want to proceed?
+            <div className={`mb-4 p-4 border rounded-lg ${colorClasses[modalStyle].bg}`}>
+              <p className={`font-medium ${colorClasses[modalStyle].text}`}>
+                {warningMessage || "⚠️ This query will modify or delete data permanently."}
               </p>
+              {confirmationLevel === 2 && (
+                <p className={`mt-2 font-bold ${colorClasses[modalStyle].text}`}>
+                  This is your LAST CHANCE to cancel. This operation CANNOT be undone!
+                </p>
+              )}
             </div>
           )}
 
@@ -76,21 +113,21 @@ const QueryConfirmModal = ({
               disabled={loading}
               className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200 disabled:opacity-50"
             >
-              Reject & Modify
+              {confirmationLevel === 2 ? "Cancel" : "Reject & Modify"}
             </button>
             <button
               onClick={onApprove}
               disabled={loading}
               className={`px-6 py-2 rounded-lg text-white transition duration-200 disabled:opacity-50 ${
-                isDangerous
-                  ? "bg-red-600 hover:bg-red-700"
-                  : "bg-blue-600 hover:bg-blue-700"
+                colorClasses[modalStyle].button
               }`}
             >
               {loading
                 ? "Executing..."
+                : confirmationLevel === 2
+                ? "I Understand - Execute Now"
                 : isDangerous
-                ? "Yes, Execute Anyway"
+                ? "Continue"
                 : "Approve & Execute"}
             </button>
           </div>
