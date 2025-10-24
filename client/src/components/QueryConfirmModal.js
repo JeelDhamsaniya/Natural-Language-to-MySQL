@@ -53,9 +53,13 @@ const QueryConfirmModal = ({
           <div className="flex items-center gap-2">
             {isDangerous ? (
               <>
-                <FiAlertTriangle className={`text-2xl ${colorClasses[modalStyle].icon}`} />
+                <FiAlertTriangle
+                  className={`text-2xl ${colorClasses[modalStyle].icon}`}
+                />
                 <h2 className="text-2xl font-bold text-gray-800">
-                  {confirmationLevel === 2 ? "🚨 FINAL WARNING" : "⚠️ Confirm Dangerous Query"}
+                  {confirmationLevel === 2
+                    ? "🚨 FINAL WARNING"
+                    : "⚠️ Confirm Dangerous Query"}
                 </h2>
               </>
             ) : (
@@ -77,13 +81,19 @@ const QueryConfirmModal = ({
 
         <div className="p-6">
           {isDangerous && (
-            <div className={`mb-4 p-4 border rounded-lg ${colorClasses[modalStyle].bg}`}>
+            <div
+              className={`mb-4 p-4 border rounded-lg ${colorClasses[modalStyle].bg}`}
+            >
               <p className={`font-medium ${colorClasses[modalStyle].text}`}>
-                {warningMessage || "⚠️ This query will modify or delete data permanently."}
+                {warningMessage ||
+                  "⚠️ This query will modify or delete data permanently."}
               </p>
               {confirmationLevel === 2 && (
-                <p className={`mt-2 font-bold ${colorClasses[modalStyle].text}`}>
-                  This is your LAST CHANCE to cancel. This operation CANNOT be undone!
+                <p
+                  className={`mt-2 font-bold ${colorClasses[modalStyle].text}`}
+                >
+                  This is your LAST CHANCE to cancel. This operation CANNOT be
+                  undone!
                 </p>
               )}
             </div>
@@ -118,9 +128,7 @@ const QueryConfirmModal = ({
             <button
               onClick={onApprove}
               disabled={loading}
-              className={`px-6 py-2 rounded-lg text-white transition duration-200 disabled:opacity-50 ${
-                colorClasses[modalStyle].button
-              }`}
+              className={`px-6 py-2 rounded-lg text-white transition duration-200 disabled:opacity-50 ${colorClasses[modalStyle].button}`}
             >
               {loading
                 ? "Executing..."

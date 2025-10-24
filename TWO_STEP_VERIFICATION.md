@@ -7,6 +7,7 @@ The application now implements a **two-step verification system** for dangerous 
 ## How It Works
 
 ### Step 1: Initial Warning (Orange Alert)
+
 When a user generates a dangerous query, they first see an **orange warning modal**:
 
 - **Icon**: ⚠️ Warning triangle in orange
@@ -16,6 +17,7 @@ When a user generates a dangerous query, they first see an **orange warning moda
 - **Action**: User must click to proceed to second confirmation
 
 ### Step 2: Final Warning (Red Alert)
+
 After clicking "Continue", the user sees a **red critical warning modal**:
 
 - **Icon**: 🚨 Warning triangle in red
@@ -26,6 +28,7 @@ After clicking "Continue", the user sees a **red critical warning modal**:
 - **Action**: Query is executed only after this confirmation
 
 ### Step 3: Execution
+
 Only after both confirmations are approved does the query execute.
 
 ## Visual Flow
@@ -84,9 +87,9 @@ The following queries execute immediately after single confirmation:
 
 ```javascript
 // Tracks confirmation level (0 = none, 1 = first, 2 = second)
-confirmationLevel: 0  // Initial state
-confirmationLevel: 1  // After first approval
-confirmationLevel: 2  // After second approval → Execute
+confirmationLevel: 0; // Initial state
+confirmationLevel: 1; // After first approval
+confirmationLevel: 2; // After second approval → Execute
 ```
 
 ### Frontend (QueryPage.js)
@@ -97,7 +100,7 @@ const [confirmationLevel, setConfirmationLevel] = useState(0);
 const [warningMessage, setWarningMessage] = useState("");
 
 // Increments with each approval
-handleExecuteQuery() // Sends current confirmationLevel to backend
+handleExecuteQuery(); // Sends current confirmationLevel to backend
 ```
 
 ### Modal Component (QueryConfirmModal.js)
