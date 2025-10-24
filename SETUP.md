@@ -3,24 +3,33 @@
 ## Prerequisites
 
 1. Node.js (v14+)
-2. MySQL database (local or db4free.net account)
+2. MySQL database (Aiven cloud, local, or db4free.net account)
 3. Google Gemini API key (free)
 
 ## Setup Steps
 
 ### 1. Get Database Credentials
 
-**Option A: Use db4free.net (Free Online)**
+**Option A: Use Aiven MySQL (Recommended - Free tier available)**
+
+- Visit https://aiven.io
+- Create free account → Create MySQL service
+- Note: host, port (usually 24715), username (avnadmin), password, database name (defaultdb)
+- SSL is enabled by default
+
+**Option B: Use db4free.net (Free Online)**
 
 - Visit https://www.db4free.net/signup.php
 - Create account → note username, password, database name
 - Host is always: `db4free.net`
+- Port: 3306 (default)
 
-**Option B: Use Local MySQL**
+**Option C: Use Local MySQL**
 
 - Install MySQL locally
 - Create database: `CREATE DATABASE nlc_db;`
 - Note your root credentials
+- Port: 3306 (default)
 
 ### 2. Get Gemini API Key
 
@@ -36,13 +45,31 @@ cd server
 npm install
 ```
 
-Create `server/.env`:
+Create `server/.env` file with your credentials:
+
+**For Aiven MySQL (with SSL):**
+
+```env
+DB_HOST=mysql-xxxxx-your-project.aivencloud.com
+DB_PORT=24715
+DB_USER=avnadmin
+DB_PASSWORD=your_password
+DB_NAME=defaultdb
+DB_SSL=true
+PORT=5000
+GEMINI_API_KEY=your_api_key_here
+NODE_ENV=development
+```
+
+**For db4free.net or Local MySQL:**
 
 ```env
 DB_HOST=db4free.net
+DB_PORT=3306
 DB_USER=your_username
 DB_PASSWORD=your_password
 DB_NAME=your_database
+DB_SSL=false
 PORT=5000
 GEMINI_API_KEY=your_api_key_here
 NODE_ENV=development
@@ -66,23 +93,6 @@ Should see:
 ```bash
 cd client
 npm install
-npm install -D tailwindcss postcss autoprefixer @craco/craco
-```
-
-Update `client/package.json` to add craco dependency and update scripts:
-
-```json
-{
-  "dependencies": {
-    "@craco/craco": "^7.1.0"
-    // ... other dependencies
-  },
-  "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test"
-  }
-}
 ```
 
 Start frontend:

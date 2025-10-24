@@ -1,6 +1,6 @@
 # NLC - AI-Powered MySQL Database Manager
 
-A full-stack web application that combines MySQL database management with AI-powered natural language query generation. Users can create and manage database tables while leveraging AI to convert natural language questions into SQL queries.
+A full-stack web application that combines MySQL database management with AI-powered natural language query generation. Users can create and manage database tables while leveraging Google Gemini 2.0 Flash AI to convert natural language questions into SQL queries.
 
 ## 🚀 Features
 
@@ -10,14 +10,16 @@ A full-stack web application that combines MySQL database management with AI-pow
 - ✅ Define primary keys, foreign keys, and relationships
 - ✅ View and browse table data with pagination
 - ✅ Insert, update, and delete operations
+- ✅ Works with any MySQL database (Aiven, db4free, local MySQL)
 
 ### AI-Powered Query Generation
 
-- 🤖 Convert natural language to SQL using Google Gemini API
+- 🤖 Convert natural language to SQL using **Google Gemini 2.0 Flash** (latest free model)
 - 📝 Get plain English explanations of generated queries
 - ✅ Approve or reject queries before execution
 - 🔄 Provide feedback to regenerate queries
 - 🔗 Query chaining - ask follow-up questions based on previous results
+- ⚡ Fast and accurate SQL generation
 
 ### Safety Features
 
@@ -38,33 +40,36 @@ A full-stack web application that combines MySQL database management with AI-pow
 **Backend:**
 
 - Node.js + Express.js
-- MySQL (mysql2 driver)
-- Google Gemini AI API
+- MySQL (mysql2 driver with SSL support)
+- Google Gemini 2.0 Flash AI API
 - CORS, Body-parser
+- ES6 Modules
 
 **Frontend:**
 
 - React 18
-- Tailwind CSS (via inline styles)
+- Custom CSS (Tailwind-like utility classes)
 - React Icons
 - Axios
 
 **Database:**
 
-- MySQL (supports db4free.net or any MySQL server)
+- MySQL (Aiven, db4free.net, or local MySQL server)
+- SSL/TLS connection support for cloud databases
 
 ## 📋 Prerequisites
 
 - Node.js (v14 or higher)
-- MySQL database (local or online like db4free.net)
+- MySQL database (Aiven, db4free.net, or local MySQL)
 - Google Gemini API key (free from https://makersuite.google.com/app/apikey)
 
 ## 🚀 Quick Start
 
-### 1. Clone or Download the Project
+### 1. Clone the Repository
 
 ```bash
-cd NLC
+git clone https://github.com/JeelDhamsaniya/Natural-Language-to-MySQL.git
+cd Natural-Language-to-MySQL
 ```
 
 ### 2. Backend Setup
@@ -77,16 +82,26 @@ npm install
 Create `.env` file in the `server` directory:
 
 ```env
-# Database Configuration
-DB_HOST=db4free.net
-DB_USER=your_username
+# Database Configuration (Aiven Example)
+DB_HOST=your-mysql-host.aivencloud.com
+DB_PORT=12345
+DB_USER=avnadmin
 DB_PASSWORD=your_password
 DB_NAME=your_database
+DB_SSL=true
+
+# For db4free.net or local MySQL:
+# DB_HOST=db4free.net (or localhost)
+# DB_PORT=3306
+# DB_USER=your_username
+# DB_PASSWORD=your_password
+# DB_NAME=your_database
+# DB_SSL=false
 
 # Server Configuration
 PORT=5000
 
-# AI API Configuration
+# Google Gemini API Configuration
 GEMINI_API_KEY=your_gemini_api_key_here
 
 # Environment
@@ -117,21 +132,10 @@ cd client
 npm install
 ```
 
-Install Tailwind CSS dependencies:
+Start the frontend:
 
 ```bash
-npm install -D tailwindcss postcss autoprefixer
-npm install @craco/craco
-```
-
-Update `client/package.json` scripts to use craco:
-
-```json
-"scripts": {
-  "start": "craco start",
-  "build": "craco build",
-  "test": "craco test"
-}
+npm start
 ```
 
 Start the frontend:

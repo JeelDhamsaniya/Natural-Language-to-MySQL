@@ -2,14 +2,14 @@
 
 ## Project Overview
 
-Full-stack AI-powered database management application. Users create/manage MySQL tables and use natural language to generate SQL queries via Google Gemini API. Features query approval workflow, dangerous query detection, and analyst mode for read-only operations.
+Full-stack AI-powered database management application. Users create/manage MySQL tables and use natural language to generate SQL queries via Google Gemini 2.0 Flash API (gemini-2.0-flash-exp). Features query approval workflow, dangerous query detection, and analyst mode for read-only operations.
 
 ## Architecture & Data Flow
 
 **Backend (Express.js):**
 
-- `config/database.js` - MySQL connection pool (mysql2/promise)
-- `config/aiService.js` - Gemini API integration for NL→SQL conversion
+- `config/database.js` - MySQL connection pool (mysql2/promise) with SSL support for cloud databases
+- `config/aiService.js` - Gemini 2.0 Flash API integration for NL→SQL conversion
 - `middlewares/queryValidator.js` - SQL safety checks (dangerous patterns, analyst mode restrictions)
 - Controllers handle: table creation, query generation, query execution
 
@@ -109,7 +109,6 @@ npm start  # Port 5000
 ```bash
 cd client
 npm install
-npm install -D tailwindcss postcss autoprefixer @craco/craco
 npm start  # Port 3000
 ```
 
@@ -129,9 +128,24 @@ Required in `server/.env`:
 
 ```
 DB_HOST=db4free.net
+DB_PORT=3306
 DB_USER=<username>
 DB_PASSWORD=<password>
 DB_NAME=<database>
+DB_SSL=false
+GEMINI_API_KEY=<get from makersuite.google.com>
+PORT=5000
+```
+
+For Aiven MySQL (with SSL):
+
+```
+DB_HOST=mysql-xxxxx-your-project.aivencloud.com
+DB_PORT=24715
+DB_USER=avnadmin
+DB_PASSWORD=<password>
+DB_NAME=defaultdb
+DB_SSL=true
 GEMINI_API_KEY=<get from makersuite.google.com>
 PORT=5000
 ```
