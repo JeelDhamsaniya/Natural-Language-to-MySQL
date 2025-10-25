@@ -56,7 +56,7 @@ export const generateSQLWithAI = async (
     if (error.response) {
       console.error("AI API Error:", {
         status: error.response.status,
-        data: error.response.data
+        data: error.response.data,
       });
     } else {
       console.error("AI API Error:", error.message);

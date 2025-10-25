@@ -33,8 +33,8 @@ export const queryAPI = {
 
 // Health check
 export const healthCheck = () => {
-  const baseUrl = process.env.REACT_APP_API_URL 
-    ? process.env.REACT_APP_API_URL.replace('/api', '') 
+  const baseUrl = process.env.REACT_APP_API_URL
+    ? process.env.REACT_APP_API_URL.replace("/api", "")
     : "http://localhost:5000";
   return axios.get(`${baseUrl}/health`);
 };
