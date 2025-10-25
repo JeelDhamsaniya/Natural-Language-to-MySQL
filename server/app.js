@@ -35,6 +35,37 @@ app.get("/health", (req, res) => {
   });
 });
 
+// Debug route to check if routes are loaded
+app.get("/debug", (req, res) => {
+  const routes = [];
+  app._router.stack.forEach((middleware) => {
+    if (middleware.route) {
+      routes.push({
+        path: middleware.route.path,
+        methods: Object.keys(middleware.route.methods),
+      });
+    } else if (middleware.name === "router") {
+      middleware.handle.stack.forEach((handler) => {
+        if (handler.route) {
+          routes.push({
+            path: handler.route.path,
+            methods: Object.keys(handler.route.methods),
+          });
+        }
+      });
+    }
+  });
+  res.json({
+    success: true,
+    routes: routes,
+    env: {
+      VERCEL: process.env.VERCEL,
+      DB_HOST: process.env.DB_HOST ? "Set" : "Not set",
+      GEMINI_API_KEY: process.env.GEMINI_API_KEY ? "Set" : "Not set",
+    },
+  });
+});
+
 // API Routes
 app.use("/api/database", databaseRoutes);
 app.use("/api/query", queryRoutes);
