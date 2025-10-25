@@ -4,11 +4,14 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const sslOptions = process.env.DB_SSL === "true" ? {
-  ca: fs.readFileSync("./ca.pem"),
-  rejectUnauthorized: true
-} : undefined;
-
+const sslOptions =
+  process.env.DB_SSL === "true"
+    ? {
+        ca: process.env.DB_CA,
+        rejectUnauthorized: true,
+      }
+    : undefined;
+    
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
