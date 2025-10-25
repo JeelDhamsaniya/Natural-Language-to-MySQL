@@ -89,6 +89,9 @@ const startServer = async () => {
   }
 };
 
-startServer();
+// Only start server if not in serverless environment (Vercel)
+if (process.env.VERCEL !== "1") {
+  startServer();
+}
 
 export default app;
