@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const sslOptions = process.env.DB_SSL === "true" ? {
-  ca: fs.readFileSync("D:\\NLC\\server\\ca.pem"),
+  ca: fs.readFileSync("./ca.pem"),
   rejectUnauthorized: true
 } : undefined;
 
