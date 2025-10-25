@@ -6,7 +6,7 @@ dotenv.config();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 /**
- * Generate SQL query and explanation from natural language using Google Gemini 2.0 Flash
+ * Generate SQL query and explanation from natural language using Google Gemini
  * @param {string} naturalLanguage - User's natural language query
  * @param {string} schemaContext - Database schema context
  * @param {string} previousQuery - Previous query for context (optional)
@@ -18,10 +18,14 @@ export const generateSQLWithAI = async (
   previousQuery = null
 ) => {
   try {
+    if (!GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is not configured");
+    }
+
     const prompt = buildPrompt(naturalLanguage, schemaContext, previousQuery);
 
     const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         contents: [
           {
@@ -37,14 +41,27 @@ export const generateSQLWithAI = async (
         headers: {
           "Content-Type": "application/json",
         },
+        timeout: 30000,
       }
     );
+
+    if (!response.data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+      console.error("Invalid API response:", response.data);
+      throw new Error("Invalid response from Gemini API");
+    }
 
     const generatedText = response.data.candidates[0].content.parts[0].text;
     return parseAIResponse(generatedText);
   } catch (error) {
-    console.error("AI API Error:", error.response?.data || error.message);
-    throw new Error("Failed to generate SQL from AI service");
+    if (error.response) {
+      console.error("AI API Error:", {
+        status: error.response.status,
+        data: error.response.data
+      });
+    } else {
+      console.error("AI API Error:", error.message);
+    }
+    throw new Error(`Failed to generate SQL: ${error.message}`);
   }
 };
 
